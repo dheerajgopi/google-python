@@ -44,17 +44,36 @@ columns, so the output looks better.
 import random
 import sys
 
+def file_lines(filename):
+  """Generator function for yielding lines of the file without whitespaces
+"""
+  with open(filename) as f:
+    for line in f:
+      yield line.split()  
 
 def mimic_dict(filename):
   """Returns mimic dict mapping each word to list of words which follow it."""
-  
-  return
+  res_dict = {}
+  start = ""
+  for lines in file_lines(filename):
+    for word in lines:
+      if not start in res_dict:
+        res_dict[start] = [word]
+      else:
+        res_dict[start].append(word)
+      start = word
+  return res_dict
 
 
 def print_mimic(mimic_dict, word):
   """Given mimic dict and start word, prints 200 random words."""
-  # +++your code here+++
-  return
+  for i in xrange(200):
+    print word,
+    nxt_word = mimic_dict[word]
+
+    if not nxt_word:
+      nxt_word = mimic_dict[""]
+    word = random.choice(nxt_word)
 
 
 # Provided main(), calls mimic_dict() and mimic()
