@@ -15,9 +15,34 @@ import commands
 """Copy Special exercise
 """
 
-# +++your code here+++
-# Write functions and modify main() to call them
+def get_special_path(directory):
+# To get a list of paths of special files i.e filenames containing leading and trailing '__'
+  special_paths = []
+  files = os.listdir(directory)
+  for filename in files:
+    special_check = re.search(r'__(\w+)__', filename)
+    if special_check:
+      file_path = os.path.abspath(filename)
+      special_paths.append(file_path)
+  return special_paths
 
+def copy_to(paths, directory):
+# To copy the special files to dir
+  if not os.path.exists(directory):
+    os.mkdir(directory)
+
+  for path in paths:
+    shutil.copy(path, directory)
+
+def zip_to(paths, zippath):
+# To zip all the files
+  cmd = 'zip -j ' + zippath + ' ' + ' '.join(paths)
+  (status, out) = commands.getstatusoutput(cmd)
+  if status:
+    sys.stderr.write(output)
+    sys.exit()
+  else:
+    print "ZipFile created"
 
 
 def main():
@@ -48,8 +73,17 @@ def main():
     print "error: must specify one or more dirs"
     sys.exit(1)
 
-  # +++your code here+++
-  # Call your functions
-  
+  paths = []
+
+  for dirname in args:
+    paths.extend(get_special_path(dirname))
+
+  if todir:
+    copy_to(paths, todir)
+  elif tozip:
+    zip_to(paths, tozip)
+  else:
+    print '\n'.join(paths)  
+
 if __name__ == "__main__":
   main()
